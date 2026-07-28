@@ -1,4 +1,4 @@
-# Config v4 - Safe Build
+# Config v5 - Browser Fix
 name: Build Android APK
 on:
   workflow_dispatch:
@@ -29,6 +29,8 @@ jobs:
           rm -rf app/www/*
           cp -R $GITHUB_WORKSPACE/* app/www/ || true
           cd app
+          sed -i 's/<\/widget>/\n    <allow-navigation href="*" \/>\n    <allow-intent href="*" \/>\n<\/widget>/g' config.xml
+          cordova plugin add cordova-plugin-inappbrowser --no-telemetry || true
           cordova platform add android@13.0.0 --no-telemetry
           cordova build android --no-telemetry
       - name: Upload APK
